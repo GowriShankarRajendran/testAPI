@@ -78,30 +78,30 @@ server_1.database.getConnection((err, connection) => {
         console.log('Database Connected Successfully');
     }
 });
-exports.socketIo.on("connection", (socket) => {
-    //console.log(socket.id);
-    socket.on("userRegister", (data) => {
-        let socketInfo = data;
-        let checkUserAvailable = onlineUserDetail.findIndex(val => val.socketID === socketInfo.socketID);
-        checkUserAvailable >= 0 ? onlineUserDetail[checkUserAvailable] = socketInfo : onlineUserDetail.push(socketInfo);
-        exports.socketIo.emit("onlineUser", onlineUserDetail);
-    });
-    socket.on("disconnect", () => {
-        let findIndex = onlineUserDetail.findIndex(val => val.socketID === socket.id);
-        if (findIndex >= 0) {
-            if (onlineUserDetail[findIndex].userDetail && onlineUserDetail[findIndex].userDetail.userGUID) {
-                server_1.database.query(`insert into loginTracker (trackerGUID, userGUID, trackerType, trackerCreateDate, trackerCreateTime) values (uuid(), "${onlineUserDetail[findIndex].userDetail.userGUID}", "Logout", "${(0, moment_1.default)().format('YYYY-MM-DD')}", "${(0, moment_1.default)().format('HH:mm:ss')}")`, (err, result) => {
-                    if (result) {
-                        onlineUserDetail.splice(findIndex, 1);
-                        exports.socketIo.emit("onlineUser", onlineUserDetail);
-                    }
-                });
-            }
-            else {
-                onlineUserDetail.splice(findIndex, 1);
-                exports.socketIo.emit("onlineUser", onlineUserDetail);
-            }
-        }
-        //console.log(`User Disconnected ${socket.id}`);
-    });
-});
+// exports.socketIo.on("connection", (socket) => {
+//     //console.log(socket.id);
+//     socket.on("userRegister", (data) => {
+//         let socketInfo = data;
+//         let checkUserAvailable = onlineUserDetail.findIndex(val => val.socketID === socketInfo.socketID);
+//         checkUserAvailable >= 0 ? onlineUserDetail[checkUserAvailable] = socketInfo : onlineUserDetail.push(socketInfo);
+//         exports.socketIo.emit("onlineUser", onlineUserDetail);
+//     });
+//     socket.on("disconnect", () => {
+//         let findIndex = onlineUserDetail.findIndex(val => val.socketID === socket.id);
+//         if (findIndex >= 0) {
+//             if (onlineUserDetail[findIndex].userDetail && onlineUserDetail[findIndex].userDetail.userGUID) {
+//                 server_1.database.query(`insert into loginTracker (trackerGUID, userGUID, trackerType, trackerCreateDate, trackerCreateTime) values (uuid(), "${onlineUserDetail[findIndex].userDetail.userGUID}", "Logout", "${(0, moment_1.default)().format('YYYY-MM-DD')}", "${(0, moment_1.default)().format('HH:mm:ss')}")`, (err, result) => {
+//                     if (result) {
+//                         onlineUserDetail.splice(findIndex, 1);
+//                         exports.socketIo.emit("onlineUser", onlineUserDetail);
+//                     }
+//                 });
+//             }
+//             else {
+//                 onlineUserDetail.splice(findIndex, 1);
+//                 exports.socketIo.emit("onlineUser", onlineUserDetail);
+//             }
+//         }
+//         //console.log(`User Disconnected ${socket.id}`);
+//     });
+// });
